@@ -1,0 +1,1 @@
+web: NODE_ENV=development npm install && npm run db:migrate && npm run build && node dist/www.js
