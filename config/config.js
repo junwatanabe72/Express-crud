@@ -29,7 +29,7 @@ module.exports = {
   production: {
     username: config.username,
     password: config.password,
-    database: config.database + '_production',
+    database: config.database,
     host: config.host,
     dialect: "mysql",
     operatorsAliases: false
