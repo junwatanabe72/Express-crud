@@ -1,14 +1,14 @@
-import db from "../models/";
-import jwt from "jsonwebtoken";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import passportJWT from "passport-jwt";
-import {compare} from "bcrypt";
+import { compare } from "bcrypt";
+import dotenv from 'dotenv';
+import users from "../models/user"
 
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
-const users = db.users;
- 
+dotenv.config();
+
 passport.use(new LocalStrategy({
   usernameField: "loginId",
   passwordField: "password",
@@ -35,7 +35,7 @@ catch (e) {
 passport.use(new JWTStrategy(
   {
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: "secret",
+    secretOrKey: process.env.SECRET,
   },
   async function (jwtPayload: any, done: Function) {
   let user;
@@ -46,7 +46,7 @@ passport.use(new JWTStrategy(
     }
     return done(null, user);
   }
-  catch (err:any) {
-    return done(err);
+  catch (e) {
+    return done(e);
   }
 }))

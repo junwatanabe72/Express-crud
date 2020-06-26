@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
-import db from "../models/index";
 import { Op } from "sequelize";
-const users: any = db.users;
-const posts: any = db.posts;
-const post_categories: any = db.post_categories;
-const categories: any = db.categories;
+import posts from "../models/post";
+import post_categories from "../models/postCategory";
+import categories from "../models/category";
 
 export default {
   async findOne(req: Request, res: Response) {
@@ -27,12 +25,12 @@ export default {
       ],
     });
     if (!post) {
-      return res.send("error");
+      return res.json({ message: 'not exist' });
     }
-    res.status(200).json({ post });
+    res.json({ post });
   },
   async findAll(req: Request, res: Response) {
-    const queryStatus = req.query.status ? req.query.status : [0, 100, 200];
+    const queryStatus: any = req.query.status ? req.query.status : [0, 100, 200];
     const post = await posts.findAll({
       where: { status: queryStatus },
       raw: false,
@@ -52,11 +50,11 @@ export default {
       ],
     });
     if (!post) {
-      return res.send("error");
+      return res.json({ message: 'not exist' });
     }
-    res.status(200).json({ post });
+    res.json({ post });
   },
-  async create(req: Request, res: Response) {
+  async create(req: any, res: Response) {
     const {
       post: { categoryIds, ...rest },
     } = req.body;
@@ -73,29 +71,29 @@ export default {
         categoryId: element,
       });
     }
-    res.status(200).json({ newPost });
+    res.json({ newPost });
   },
-
-  async update(req: Request, res: Response) {
+  async update(req: any, res: Response) {
+    const targetPost: any = await posts.findOne({
+      where: { id: req.params.id, userId: req.user.id },
+    })
+    if (!targetPost) { res.json({ message: "check this userId" });}
     const {
       post: { categoryIds, ...rest },
     } = req.body;
     const params = { ...rest };
     const updatePostId = req.params.id;
     //postsTable
-    await posts.update(
+    await targetPost.update(
       {
         title: params.title,
         body: params.body,
         status: params.status,
-      },
-      {
-        where: { id: updatePostId },
       }
     );
 
     if (categoryIds.length === 0) {
-      res.status(200).json({});
+      res.json({});
     }
 
     for (let element of categoryIds) {
@@ -116,12 +114,17 @@ export default {
         where: { postId: updatePostId, categoryId: element.categoryId },
       });
     }
-    res.status(200).json({});
+    res.json({});
   },
-  async delete(req: Request, res: Response) {
-    await posts.destroy({
-      where: { id: req.params.id },
-    });
-    res.status(200).json({});
-  },
+  async delete(req: any, res: Response) {
+    const targetPost: any = await posts.findOne({
+      where: { id: req.params.id, userId: req.user.id },
+    })
+    if (!targetPost) { 
+      res.json({ message: "check this userId" });
+    }
+
+    await targetPost.destroy();
+    res.json({});
+  }
 };

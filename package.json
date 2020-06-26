@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./dist/bin/www.js",
-    "nodemon": "nodemon ./dist/bin/www.js",
+    "start": "node ./dist/app.js",
+    "nodemon": "nodemon ./dist/app.js",
     "build": "tsc",
     "watch": "tsc -w",
     "db:migrate": "sequelize-cli db:migrate",

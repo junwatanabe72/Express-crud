@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
-import db from "../models/index";
+import dotenv from 'dotenv';
+import users from "../models/user";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import {hash} from "bcrypt";
-const users = db.users;
 
+dotenv.config();
 const authRouter = express.Router();
 
 authRouter.post("/login", async (req: Request, res: Response) => {
@@ -21,7 +22,8 @@ authRouter.post("/login", async (req: Request, res: Response) => {
         res.send(err);
       }
       const payload = { id: user.id, loginId: user.loginId };
-      const token = jwt.sign(payload, "secret");
+      const secret: any = process.env.SECRET;
+      const token = jwt.sign(payload, secret);
       user.authorize_token = "[Secret]";
       return res.json({ user, token });
     });
@@ -51,14 +53,5 @@ authRouter.post("/signup", async (req: Request, res: Response) => {
   await users.create(user);
   res.send(user);
 });
-
-
-
-
-  
-
-
-
-
 
 export { authRouter };
