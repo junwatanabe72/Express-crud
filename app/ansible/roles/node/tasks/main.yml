@@ -1,0 +1,28 @@
+- name: setup nodejs12.x
+  shell: curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+
+- name: installing 12.x version of node.js
+  yum:
+    name: nodejs
+    state: latest
+
+- name: add expressApp
+  copy:
+    src: "roles/node/files/expressApp"
+    dest: "/tmp"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install packages based on package.json.
+  npm:
+    path: /tmp/expressApp
+
+- name: add .envfile
+  copy:
+    src: "roles/node/files/.env"
+    dest: "/tmp/expressApp"
+    owner: root
+    group: root
+    mode: 0644
+

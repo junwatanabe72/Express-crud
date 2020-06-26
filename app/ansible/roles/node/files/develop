@@ -1,0 +1,81 @@
+- name: setup nodejs12.x
+  shell: curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+
+- name: installing 12.x version of node.js
+  yum:
+    name: nodejs
+    state: latest
+
+- name: Install packages based on package.json.
+  npm:
+    path: /opt/node
+
+- name: Install "express" node.js package.
+  npm:
+    name: "{{ item }}"
+    state: present
+    path: /opt/node
+  loop:
+    - express
+
+- name: Install "express-generator" "nodemon" "sequelize-cli" node.js package.
+  npm:
+    name: "{{ item }}"
+    state: present
+    global: yes
+    path: /opt/node
+  loop:
+    - express-generator
+    - typescript
+    - nodemon
+    - sequelize-cli
+
+- name: run expressApp
+  shell: express expressApp 
+  args:
+    chdir: /opt/node
+
+- name: Install packages based on package.json.
+  npm:
+    path: /opt/node/expressApp
+
+- name: Install "eslint","typescript" node.js package.
+  npm:
+    name: "{{ item }}"
+    state: present
+    path: /opt/node/expressApp
+  loop:
+    - eslint
+    - @typescript-eslint/parser
+    - @typescript-eslint/eslint-plugin
+    - prettier
+    - eslint-plugin-prettier
+    - eslint-config-prettier
+    - passport
+    - passport-local
+    - express-session
+    - sequelize
+    - body-parser
+    - @types/node
+    - @types/express
+    - @types/sequelize
+    - mysql2
+
+- name: add tsconfig.json
+  copy:
+    src: "roles/node/files/tsconfig.json"
+    dest: "/opt/node/expressApp"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: add script[start] & [nodemon] & [build] & [watch]in package.json
+  lineinfile:
+    path: /opt/node/expressApp/package.json
+    insertbefore: '^"scripts": {'
+    line: "{{ item.line }}"
+  loop:
+    - { line: '"start": "node ./dist/bin/www.js",' }
+    - { line: '"nodemon": "nodemon ./dist/bin/www.js",' }
+    - { line: '"build": "tsc",' }
+    - { line: '"watch": "tsc -w"' }
