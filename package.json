@@ -7,13 +7,13 @@
     "nodemon": "nodemon ./dist/app.js",
     "build": "tsc",
     "watch": "tsc -w",
-    "db:migrate": "sequelize db:migrate",
-    "db:migrate:generate": "sequelize migration:generate --name ",
-    "db:seed": "sequelize db:seed:all",
-    "db:seed:generate": "sequelize seed:generate --name ",
-    "db:drop": "sequelize db:drop",
-    "db:create": "sequelize db:create",
-    "db:reset": "sequelize db:drop && sequelize-cli db:create && sequelize-cli db:migrate",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:migrate:generate": "sequelize-cli migration:generate --name ",
+    "db:seed": "sequelize-cli db:seed:all",
+    "db:seed:generate": "sequelize-cli seed:generate --name ",
+    "db:drop": "sequelize-cli db:drop",
+    "db:create": "sequelize-cli db:create",
+    "db:reset": "sequelize-cli db:drop && sequelize-cli db:create && sequelize-cli db:migrate",
     "db:setup": "yarn db:reset && yarn db:seed"
   },
   "dependencies": {
@@ -49,6 +49,7 @@
     "passport-local": "^1.0.0",
     "prettier": "^2.0.5",
     "sequelize": "^5.21.13",
+    "sequelize-cli": "^6.0.0",
     "typescript": "^3.9.5"
   },
   "description": "",
