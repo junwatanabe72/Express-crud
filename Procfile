@@ -1,1 +1,1 @@
-web: npm install && && npm run db:drop && npm run db:create && npm run db:migrate && npm run db:seed && npm run build && node dist/app.js
+web: npm install && npm run db:drop && npm run db:create && npm run db:migrate && npm run db:seed && npm run build && node dist/app.js
