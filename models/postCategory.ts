@@ -21,7 +21,7 @@ PostCategory.init(
     },
   },
   {
-    tableName: "postCategories",
+    tableName: "post_categories",
     sequelize: sequelize,
   }
 );

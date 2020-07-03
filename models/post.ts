@@ -44,7 +44,7 @@ Post.init(
 Post.hasMany(PostCategory, {
   sourceKey: 'id',
   foreignKey: 'postId',
-  as: "postCategories",
+  as: "post_categories",
   constraints: false
 });
 PostCategory.belongsTo(Post, {

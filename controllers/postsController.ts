@@ -13,7 +13,7 @@ export default {
       include: [
         {
           model: postCategories,
-          as: "postCategories",
+          as: "post_categories",
           required: false,
           include: [
             {
@@ -38,7 +38,7 @@ export default {
       include: [
         {
           model: postCategories,
-          as: "postCategories",
+          as: "post_categories",
           required: false,
           include: [
             {
@@ -93,9 +93,7 @@ export default {
     const targetPost: any = await posts.findOne({
       where: { id: req.params.id, userId: req.user.id },
     });
-    if (!targetPost) {
-      res.json({ message: "check this userId" });
-    }
+    if (!targetPost) {res.json({ message: "check this userId" });}
     const {
       post: { categoryIds, ...rest },
     } = req.body;
@@ -105,11 +103,10 @@ export default {
     try {
       await sequelize.transaction(async (t) => {
         //postを更新する。
-        await targetPost.update(
-          {
-            title: params.title,
-            body: params.body,
-            status: params.status,
+        await targetPost.update({
+          title: params.title,
+          body: params.body,
+          status: params.status,
           },
           { transaction: t }
         );
@@ -119,14 +116,15 @@ export default {
         }
         //categoryを更新する。（新しくカテゴリ登録する。）
         for (let element of categoryIds) {
-          await postCategories.findOrCreate({
-            where: { postId: updatePostId, categoryId: element },
-            defaults: {
-              // 新規登録するデータ
-              postId: updatePostId,
-              categoryId: element,
-            },
-            transaction: t,
+          await postCategories.findOrCreate(
+            {
+              where: { postId: updatePostId, categoryId: element },
+              defaults: {
+                // 新規登録するデータ
+                postId: updatePostId,
+                categoryId: element,
+              },
+              transaction: t,
           });
         }
         const changedPost_categories = await postCategories.findAll({
@@ -138,10 +136,13 @@ export default {
         });
         //categoryを更新する。（該当しないカテゴリを削除する。）
         for (let element of changedPost_categories) {
-          await postCategories.destroy({
-            where: { postId: updatePostId, categoryId: element.categoryId },
-            transaction: t,
-          });
+          await postCategories.destroy(
+            {
+              where: { postId: updatePostId, categoryId: element.categoryId }
+              ,
+              transaction: t,
+            }
+          );
         }
         res.json({});
       });
