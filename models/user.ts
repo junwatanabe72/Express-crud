@@ -3,14 +3,7 @@ import  sequelize  from '../middlewares/sequelize';
 import Post from './post';
 
  class User extends Model {
-   public id!: number;
-   public loginId!: string;
    public authorize_token!: string;
-   public name!: string;
-   public iconUrl!: string;
-
-   public readonly createdAt!: Date;
-   public readonly updatedAt!: Date;
  }
 User.init(
   {
@@ -39,17 +32,7 @@ User.init(
   },
 );
 
-User.hasMany(Post, {
-  sourceKey: 'id',
-  foreignKey: 'userId',
-  as: "posts",
-});
-
-Post.belongsTo(User, {
-  foreignKey: 'userId',
-  onDelete: "CASCADE",
-  constraints: false, 
-  as: "users",
-});
+User.hasMany(Post);
+Post.belongsTo(User);
 
 export default User;

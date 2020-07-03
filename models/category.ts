@@ -2,14 +2,7 @@ import { Model, DataTypes }from "sequelize";
 import  sequelize  from '../middlewares/sequelize';
 import PostCategory from "./postCategory";
 
-export default class Category extends Model {
-  public id!: number;
-  public key!: string;
-  public name!: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
+export default class Category extends Model {}
 Category.init(
   {
     id: {

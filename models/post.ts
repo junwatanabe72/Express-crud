@@ -2,15 +2,15 @@ import { Model,DataTypes } from "sequelize";
 import  sequelize  from '../middlewares/sequelize';
 import PostCategory from './postCategory';
 
+const POST_STATUSES = {
+  draft: 0,
+  published: 100,
+  deleted: 200,
+};
+export const statusValues = Object.values(POST_STATUSES);
+
 export default class Post extends Model {
   public id!: number;
-  public userId!: number;
-  public title!: string;
-  public body!: string;
-  public status!: number;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 Post.init(
@@ -32,19 +32,19 @@ Post.init(
     },
     status: {
       type: DataTypes.INTEGER,
-      defaultValue: 0,
-    }
+      defaultValue: POST_STATUSES.draft,
+    },
   },
   {
-    tableName: 'posts',
+    tableName: "posts",
     sequelize: sequelize,
-  },
+  }
 );
 
 Post.hasMany(PostCategory, {
   sourceKey: 'id',
   foreignKey: 'postId',
-  as: "post_categories",
+  as: "postCategories",
   constraints: false
 });
 PostCategory.belongsTo(Post, {
