@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
-import path from "path";
 import http from "http";
 import debug from "debug";
 import dotenv from "dotenv";
