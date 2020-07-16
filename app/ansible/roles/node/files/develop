@@ -45,9 +45,21 @@
     state: present
     path: /opt/node/expressApp
   loop:
+    - "{{TYPESCRIPTESLINT}}"
+    - "{{TYPESCRIPTESLINTPLUGIN}}"
+    - "{{TYPESCRIPTNODE}}"
+    - "{{TYPESCRIPTEXPRESS}}"
+    - "{{TYPESCRIPTSEQUELIZE}}"
+    - "{{TYPESCRIPTBCRYPT}}"
+    - "{{TYPESCRIPTCOOKIEPARSER}}"
+    - "{{TYPESCRIPTDEBUG}}"
+    - "{{TYPESCRIPTJSONWEBTOKEN}}"
+    - "{{TYPESCRIPTMORGAN}}"
+    - "{{TYPESCRIPTPASSPORT}}"
+    - "{{TYPESCRIPTPSJWT}}"
+    - "{{TYPESCRIPTPSLOCAL}}"
+    - "{{TYPESCRIPTVALI}}"
     - eslint
-    - @typescript-eslint/parser
-    - @typescript-eslint/eslint-plugin
     - prettier
     - eslint-plugin-prettier
     - eslint-config-prettier
@@ -56,9 +68,10 @@
     - express-session
     - sequelize
     - body-parser
-    - @types/node
-    - @types/express
-    - @types/sequelize
+    - cookie-parser
+    - dotenv
+    - debug
+    - jsonwebtoken
     - mysql2
 
 - name: add tsconfig.json
@@ -69,13 +82,25 @@
     group: root
     mode: 0644
 
-- name: add script[start] & [nodemon] & [build] & [watch]in package.json
+- name: add script[start] in package.json
   lineinfile:
-    path: /opt/node/expressApp/package.json
-    insertbefore: '^"scripts": {'
+    path: /opt/server/package.json
+    regexp: '^(.*)"start": "node ./bin/www"'
     line: "{{ item.line }}"
   loop:
-    - { line: '"start": "node ./dist/bin/www.js",' }
-    - { line: '"nodemon": "nodemon ./dist/bin/www.js",' }
-    - { line: '"build": "tsc",' }
-    - { line: '"watch": "tsc -w"' }
+    - { line: '    "start": "node ./dist/bin/app.js",' }
+
+- name: add script[nodemon] & [build] & [watch]in package.json
+  lineinfile:
+    path: /opt/server/package.json
+    insertafter: '^(.*)"start": "node ./dist/bin/app.js"'
+    line: "{{ item.line }}"
+  loop:
+    - { line: '    "nodemon": "nodemon ./dist/bin/app.js"' }
+    - { line: '    "build": "tsc",' }
+    - { line: '    "db:migrate": "sequelize-cli db:migrate",' }
+    - { line: '    "db:seed": "sequelize-cli db:seed:all",' }
+    - { line: '    "db:drop": "sequelize-cli db:drop",' }
+    - { line: '    "db:create": "sequelize-cli db:create",' }
+    - { line: '    "db:reset": "sequelize-cli db:drop && sequelize-cli db:create && sequelize-cli db:migrate",' }
+
